@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<launch>
+    <rosparam command="load" file="$(find fsds_utils)/config/config.yaml" />
+
+    <group ns="vision_node">
+        <node name="image_inference" pkg="fsds_utils" type="image_inference.py" output="screen" />
+    </group>
+
+    <group ns="steering_node">
+        <node name="steering" pkg="fsds_utils" type="autonomous_steering.py" output="screen" />
+    </group>
+
+    <!-- <node type="rviz" name="rviz" pkg="rviz" args="-d $(find fsds_utils)/rviz/rviz_config.rviz" /> -->
+</launch>
