@@ -8,7 +8,7 @@ Repository conatins source code for Autonomous Cars laboratories. It's a subject
 
 Clone repository:
 ```bash
-git clone https://github.com/MatPiech/Autonomous_Cars_laboratory_FSDS.git fsds_utils/
+git clone https://github.com/MatPiech/Autonomous_Cars_FSDS_project.git fsds_utils/
 ```
 
 ## Laboratories
