@@ -14,5 +14,5 @@
         <param name="steering_mode" value="$(arg steering_mode)"/>
     </group>
 
-    <!-- <node type="rviz" name="rviz" pkg="rviz" args="-d $(find fsds_utils)/rviz/rviz_config.rviz" /> -->
+    <node type="rviz" name="rviz" pkg="rviz" args="-d $(find fsds_utils)/rviz/rviz_config_lidar.rviz" />
 </launch>
