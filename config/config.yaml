@@ -1,0 +1,27 @@
+# Autonomous system constatns
+vehicle:
+  max_throttle: 0.4 # m/s^2
+  target_speed: 6 # m/s
+  max_steering: 0.5
+
+sensors:
+  cones_range_cutoff: 8 # meters
+
+  camera_config:
+    X_offset: -300 # mm
+    Y_offset: 60 # mm
+    FOV: 90 # degrees
+    base: 120 # mm
+    x_offset: 50 # px
+    image_width: 785 # px
+  
+  vision:
+    yolo:
+      yolo_weights_file: '/home/ue4/Formula-Student-Driverless-Simulator/ros/src/fsds_utils/data/yolov4-tiny_dv_final.weights'
+      yolo_config_file: '/home/ue4/Formula-Student-Driverless-Simulator/ros/src/fsds_utils/data/yolov4-tiny_dv.cfg'
+      confidence_threshold: 0.5
+      nms_threshold: 0.3
+      model_size: 416
+    squeezenet:
+      squeezenet_model_path: '/home/ue4/Formula-Student-Driverless-Simulator/ros/src/fsds_utils/data/squeezenet/'
+      model_input_shape: [40,28]

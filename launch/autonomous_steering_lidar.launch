@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<launch>
+    <rosparam command="load" file="$(find fsds_utils)/config/config.yaml" />
+
+    <arg name="steering_mode" default="autonomous"/>
+
+    <group ns="lidar_node">
+        <node name="lidar" pkg="fsds_utils" type="lidar_detector.py" output="screen" />
+    </group>
+
+    <group ns="steering_node">
+        <node name="steering" pkg="fsds_utils" type="steering_example.py" output="screen" />
+        <param name="steering_mode" value="$(arg steering_mode)"/>
+    </group>
+
+    <!-- <node type="rviz" name="rviz" pkg="rviz" args="-d $(find fsds_utils)/rviz/rviz_config.rviz" /> -->
+</launch>
