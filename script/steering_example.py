@@ -7,7 +7,7 @@ import rospy as rp
 
 from geometry_msgs.msg import TwistStamped, PoseArray
 
-from fs_msgs.msg import ControlCommand, FinishedSignal
+from fs_msgs.msg import ControlCommand, FinishedSignal, GoSignal
 
 
 class SteeringExample:
@@ -21,6 +21,7 @@ class SteeringExample:
 
         self.control_publisher = rp.Publisher('/fsds/control_command', ControlCommand, queue_size=10)
         self.finished_publisher = rp.Publisher('/fsds/signal/finished', FinishedSignal, queue_size=1)
+        self.go_publisher = rp.Publisher('/fsds/signal/go', GoSignal, queue_size=1)
 
         self.steering_time = 0
         self.velocity = 0.0
@@ -29,6 +30,10 @@ class SteeringExample:
         self.steering = 0.0
 
     def start(self, *args):
+        gs = GoSignal()
+        gs.mission = 'Trackdrive'
+        self.go_publisher.publish(gs)
+        
         self.go = True
         self.brake = 0
 
@@ -122,21 +127,21 @@ if __name__ == '__main__':
 
     SE = SteeringExample()
 
-    rp.Timer(rp.Duration(1), SE.start, oneshot=True)
-
     # check steering mode according to launch parameter
     if steering_mode == 'autonomous':
-        rp.Timer(rp.Duration(0.1), SE.go_autonomous)
+        rp.Timer(rp.Duration(1), SE.go_autonomous)
     elif steering_mode == 'sin' or steering_mode == 'sinus':
-        rp.Timer(rp.Duration(0.1), SE.go_sin)
+        rp.Timer(rp.Duration(1), SE.go_sin)
     elif steering_mode == 'circle':
-        rp.Timer(rp.Duration(0.1), SE.go_circle)
+        rp.Timer(rp.Duration(1), SE.go_circle)
     elif steering_mode == 'straight':
-        rp.Timer(rp.Duration(0.1), SE.go_straight)
+        rp.Timer(rp.Duration(1), SE.go_straight)
     else:
         raise NotImplementedError('Steering mode not recognized, available options: {autonomous, sinus, circle, straight}')
+        
+    rp.Timer(rp.Duration(5), SE.start, oneshot=True)
 
-    rp.Timer(rp.Duration(240), SE.publish_finish_signal, oneshot=True)
+    # rp.Timer(rp.Duration(240), SE.publish_finish_signal, oneshot=True)
 
     while not rp.is_shutdown():
         rp.spin()
