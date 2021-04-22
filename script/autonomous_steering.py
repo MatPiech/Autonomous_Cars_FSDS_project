@@ -7,7 +7,7 @@ import rospy as rp
 
 from geometry_msgs.msg import TwistStamped, PoseArray
 
-from fs_msgs.msg import ControlCommand, FinishedSignal
+from fs_msgs.msg import ControlCommand, FinishedSignal, GoSignal
 
 
 class AutonomousSteering:
@@ -18,6 +18,7 @@ class AutonomousSteering:
 
         self.control_publisher = rp.Publisher('/fsds/control_command', ControlCommand, queue_size=10)
         self.finished_publisher = rp.Publisher('/fsds/signal/finished', FinishedSignal, queue_size=1)
+        self.go_publisher = rp.Publisher('/fsds/signal/go', GoSignal, queue_size=1)
 
         self.velocity = 0.0
         self.brake = 1 # float64 0..1
@@ -25,6 +26,10 @@ class AutonomousSteering:
         self.steering = 0.0
 
     def start(self, *args):
+        gs = GoSignal()
+        gs.mission = 'Trackdrive'
+        self.go_publisher.publish(gs)
+        
         self.go = True
         self.brake = 0
 
@@ -47,11 +52,11 @@ if __name__ == '__main__':
 
     AS = AutonomousSteering()
 
-    rp.Timer(rp.Duration(1), AS.start, oneshot=True)
+    rp.Timer(rp.Duration(1), AS.go_autonomous)
+    
+    rp.Timer(rp.Duration(5), AS.start, oneshot=True)
 
-    rp.Timer(rp.Duration(0.1), AS.go_autonomous)
-
-    rp.Timer(rp.Duration(300), AS.publish_finish_signal, oneshot=True)
+    # rp.Timer(rp.Duration(300), AS.publish_finish_signal, oneshot=True)
 
     while not rp.is_shutdown():
         rp.spin()
