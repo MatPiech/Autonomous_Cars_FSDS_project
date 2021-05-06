@@ -26,7 +26,7 @@ class ImageInference:
 
 
     def right_camera_image_callback(self, data):
-        self.right_img = np.frombuffer(data.data, dtype=np.uint8).reshape(data.height, data.width, -1)
+        right_img = np.frombuffer(data.data, dtype=np.uint8).reshape(data.height, data.width, -1)
 
 
     def left_camera_image_callback(self, data):

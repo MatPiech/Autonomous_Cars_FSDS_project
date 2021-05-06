@@ -5,7 +5,7 @@ import yaml
 import numpy as np
 import rospy as rp
 
-from geometry_msgs.msg import TwistStamped, PoseArray
+from geometry_msgs.msg import PoseArray
 
 from fs_msgs.msg import ControlCommand, FinishedSignal, GoSignal
 
@@ -24,6 +24,7 @@ class AutonomousSteering:
         self.brake = 1 # float64 0..1
         self.go = False
 
+
     def start(self, *args):
         gs = GoSignal()
         gs.mission = 'Trackdrive'
@@ -31,6 +32,7 @@ class AutonomousSteering:
         
         self.go = True
         self.brake = 0
+
 
     def publish_control_command(self, throttle, steering):
         if self.go:
@@ -43,8 +45,10 @@ class AutonomousSteering:
 
             self.control_publisher.publish(cc)
 
+
     def emergency_brake(self):
         self.publish_finish_signal()
+
 
     def publish_finish_signal(self, *args):
         self.brake = 1
@@ -53,11 +57,18 @@ class AutonomousSteering:
 
         self.finished_publisher.publish(FinishedSignal())
 
+
     def calculate_steering(self):
         raise NotImplementedError("Racecar autonomous steering not implemented")
 
+        return 0
+
+
     def calculate_throttle(self):
         raise NotImplementedError("Racecar autonomous throttle not implemented")
+
+        return 0
+
 
     def cones_position_callback(self, data):
         # calculate steering using detected cones position
