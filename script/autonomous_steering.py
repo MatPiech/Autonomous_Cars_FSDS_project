@@ -32,6 +32,17 @@ class AutonomousSteering:
         self.go = True
         self.brake = 0
 
+    def publish_control_command(self, throttle, steering):
+        if self.go:
+            cc = ControlCommand()
+
+            cc.header.stamp = rp.Time.now()
+            cc.throttle = throttle
+            cc.steering = steering
+            cc.brake = self.brake
+
+            self.control_publisher.publish(cc)
+
     def emergency_brake(self):
         self.publish_finish_signal()
 
