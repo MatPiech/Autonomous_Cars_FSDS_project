@@ -23,7 +23,6 @@ class AutonomousSteering:
         self.velocity = 0.0
         self.brake = 1 # float64 0..1
         self.go = False
-        self.steering = 0.0
 
     def start(self, *args):
         gs = GoSignal()
@@ -43,20 +42,30 @@ class AutonomousSteering:
 
         self.finished_publisher.publish(FinishedSignal())
 
-    def go_autonomous(self, *args):
+    def calculate_steering(self):
         raise NotImplementedError("Racecar autonomous steering not implemented")
+
+    def calculate_throttle(self):
+        raise NotImplementedError("Racecar autonomous throttle not implemented")
+
+    def cones_position_callback(self, data):
+        # calculate steering using detected cones position
+        # use as data callback for cones poses topics
+
+        steering = self.calculate_steering() # TODO: calculate steering value
+
+        throttle = self.calculate_throttle() # TODO: calculate throttle value
+
+        self.publish_control_command(throttle=throttle, steering=steering)
 
 
 if __name__ == '__main__':
     rp.init_node('steering', log_level=rp.DEBUG)
 
     AS = AutonomousSteering()
-
-    rp.Timer(rp.Duration(1), AS.go_autonomous)
     
-    rp.Timer(rp.Duration(5), AS.start, oneshot=True)
+    # One can change sleep time if vision system needs more time for loading
+    # Also one can move AS.start to AS __init__ as self.start()
+    rp.Timer(rp.Duration(1), AS.start, oneshot=True)
 
-    # rp.Timer(rp.Duration(300), AS.publish_finish_signal, oneshot=True)
-
-    while not rp.is_shutdown():
-        rp.spin()
+    rp.spin()
